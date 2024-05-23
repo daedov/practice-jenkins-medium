@@ -10,23 +10,30 @@ pipeline {
     stages {
         
         stage('checkout') {
-                steps {
+            steps {
                 git branch: 'main',
                 credentialsId: githubCredential,
                 url: 'https://github.com/daedov/practice-jenkins-medium.git'
-                }
+            }
         }
-        stage('Install Dependencies') {
-                steps {
-                    // Instalar dependencias del proyecto, incluyendo pytest
-                    sh 'pip install -r requirements.txt'
-                }
+        stage('Set up Python Environment') {
+            steps {
+                sh '''
+                python3 -m venv venv
+                . venv/bin/activate
+                pip install --upgrade pip
+                pip install -r requirements.txt
+                '''
+            }
         }
         
-        stage ('Test'){
-                steps {
-                sh "pytest testRoutes.py"
-                }
+        stage('Test') {
+            steps {
+                sh '''
+                   . venv/bin/activate
+                   pytest testRoutes.py
+                '''
+            }
         }
         
         stage ('Clean Up'){
