@@ -16,12 +16,6 @@ pipeline {
                 url: 'https://github.com/daedov/practice-jenkins-medium.git'
                 }
         }
-        stage('Install Dependencies') {
-            steps {
-                // Instalar dependencias del proyecto, incluyendo pytest
-                sh 'pip install -r requirements.txt'
-            }
-        }
         
         stage ('Test'){
             steps {
