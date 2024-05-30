@@ -17,11 +17,11 @@ pipeline {
             }
         }
         
-        // stage ('Test'){
-        //     steps {
-        //         sh "pytest testRoutes.py"
-        //     }
-        // }
+        stage ('Test'){
+            steps {
+                sh "pytest testRoutes.py"
+            }
+        }
         
         stage ('Clean Up'){
             steps{
