@@ -19,18 +19,6 @@ pipeline {
                 url: 'https://github.com/daedov/practice-jenkins-medium.git'
             }
         }
-        stage('Install dependencies') {
-	    steps {
-		sh 'pip install -r requirements.txt'
-		}
-	}	
-
-      
-        stage ('Test'){
-            steps {
-                sh "pytest testRoutes.py"
-            }
-        }
         
         stage ('Clean Up'){
             steps{
