@@ -1,15 +1,14 @@
 def img
 pipeline {
-    agent any
-    
     environment {
+        VIRTUAL_ENV = "${env.WORKSPACE}/venv"
         PATH = "${VIRTUAL_ENV}/bin:${env.PATH}"
         registry = "daedov1/python-jenkins" //To push an image to Docker Hub, you must first name your local image using your Docker Hub username and the repository name that you created through Docker Hub on the web.
         registryCredential = 'DOCKERHUB'
         githubCredential = 'GITHUB'
         dockerImage = ''
     }
-
+    agent any
     stages {
         
         stage('checkout') {
@@ -17,6 +16,16 @@ pipeline {
                 git branch: 'main',
                 credentialsId: githubCredential,
                 url: 'https://github.com/daedov/practice-jenkins-medium.git'
+            }
+        }
+        
+        stage('Setup Python Environment') {
+            steps {
+                sh '''
+                    python3 -m venv ${VIRTUAL_ENV}
+                    . ${VIRTUAL_ENV}/bin/activate
+                    pip install pytest
+                '''
             }
         }
         
@@ -41,10 +50,19 @@ pipeline {
         stage('Push To DockerHub') {
             steps {
                 script {
-                    docker.withRegistry( 'https://registry.hub.docker.com ', registryCredential ) {
+                    docker.withRegistry( 'https://index.docker.io/v1/ ', registryCredential ) {
                         dockerImage.push()
                     }
                 }
+            }
+        }
+        
+        stage('Run Tests') {
+            steps {
+                sh '''
+                    . ${VIRTUAL_ENV}/bin/activate
+                    pytest testRoutes.py
+                '''
             }
         }
                     
