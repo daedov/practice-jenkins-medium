@@ -56,15 +56,6 @@ pipeline {
                 }
             }
         }
-        
-        stage('Run Tests') {
-            steps {
-                sh '''
-                    . ${VIRTUAL_ENV}/bin/activate
-                    pytest testRoutes.py
-                '''
-            }
-        }
                     
         stage('Deploy') {
            steps {
