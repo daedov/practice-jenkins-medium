@@ -1,5 +1,7 @@
 def img
 pipeline {
+    agent any
+    
     environment {
         VIRTUAL_ENV = "${WORKSPACE}/venv"
         PATH = "${VIRTUAL_ENV}/bin:${env.PATH}"
@@ -8,7 +10,7 @@ pipeline {
         githubCredential = 'GITHUB'
         dockerImage = ''
     }
-    agent any
+
     stages {
         
         stage('checkout') {
@@ -26,13 +28,13 @@ pipeline {
                         sh 'python3 -m venv venv'
                     }
                 }
-                sh 'pip install -r requirements.txt'
+                sh 'source venv/bin/activate && pip install -r requirements.txt'
             }
         }
         
         stage ('Test'){
             steps {
-                sh "pytest testRoutes.py"
+                sh "source venv/bin/activate && pytest testRoutes.py"
             }
         }
         
